@@ -1,0 +1,26 @@
+<div class="bg-white w-full h-full flex items-center flex-col p-6">
+    <h1 class="text-2xl text-gray-600 font-bold">History</h1>
+    <div class="w-full h-full py-10 flex flex-col gap-4 overflow-scroll" id="history-list">
+    </div>
+
+    <script>
+        const inputs = JSON.parse(localStorage.getItem('inputs')) || [];
+        const historyList = document.getElementById('history-list');
+
+        inputs.forEach(input => {
+            const div = document.createElement('div');
+            
+            const timestamp = document.createElement('h1');
+            timestamp.textContent = input.timestamp;
+            timestamp.classList.add('font-bold', 'text-gray-700');
+
+            const content = document.createElement('p');
+            content.textContent = input.text;
+            content.classList.add('text-lg', 'text-gray-700','text-justify','text-sm');
+
+            div.appendChild(timestamp);
+            div.appendChild(content);
+            historyList.appendChild(div);
+        });
+    </script>
+</div>

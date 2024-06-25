@@ -1,0 +1,59 @@
+<div class="bg-white w-full h-full flex">
+    <div class="w-full p-6 pb-32 border">
+        <div class="text-gray-600 flex mb-10">
+            <label class="w-auto" for="summary_ratio">Summary Ratio:</label>
+            <select class="bg-transparent w-fit outline-none" name="summary_ratio" id="summary_ratio">
+                <option value="0.1">10%</option>
+                <option value="0.2">20%</option>
+                <option value="0.3" selected>30%</option>
+                <option value="0.4">40%</option>
+                <option value="0.5">50%</option>
+            </select>
+        </div>
+        <textarea name="text" id="text" rows="10" cols="30" class="w-full h-full outline-none resize-none"
+            placeholder="Enter your text here or paste your text..."></textarea>
+        <div class="flex justify-center">
+            <button id="summarize-btn"
+                class="bg-cyan-200 border-none rounded-lg shadow-lg text-2xl pt-1 pb-2 px-4 hover:bg-cyan-300 flex items-center hover:outline-cyan-400 transition-all duration-100 ease-out hover:outline hover:outline-1 text-gray-800">Summarize</button>
+        </div>
+    </div>
+    <div class="w-full p-6 border overflow-scroll text-gray-600">
+        <h1 class="text-2xl font-bold">Summary:</h1>
+        <div id="summary-result"></div>
+        <br>
+        <hr><br>
+        <h1 class="text-2xl font-bold">Keywords:</h1>
+        <div id="keywords-result"></div>
+    </div>
+</div>
+
+<script>
+     $('#summarize-btn').click(function() {
+            const text = $('textarea[name="text"]').val();
+            const summary_ratio = $('#summary_ratio').val();
+            
+            const now = new Date();
+            const timestamp = now.toLocaleString();
+            const input = { text: text, timestamp: timestamp };
+            
+            let inputs = JSON.parse(localStorage.getItem('inputs')) || [];
+            if(text!='')
+            {
+                inputs.push(input);
+                localStorage.setItem('inputs', JSON.stringify(inputs));
+            }
+
+            
+            
+            $.ajax({
+                type: 'POST',
+                url: '/summary',
+                data: { text: text, summary_ratio: summary_ratio },
+                success: function(response) {
+                    $('#summary-result').html(response.summary);
+                    $('#keywords-result').html(response.keywords.map(keyword => `<span>${keyword[0]} (${keyword[1]})</span>`).join(', '));
+                }
+            });
+        });
+
+</script>

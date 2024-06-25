@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+<html lang="en" >
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Summarizer</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script src="https://kit.fontawesome.com/c5b3ef347b.js"></script>
+</head>
+<body>
+    <nav class="h-16 shadow-md flex items-center justify-between px-3 gap-5 fixed w-full">
+        <div class="flex items-center gap-5">
+            <h1 class="flex items-center gap-2 text-2xl font-bold"><img class="w-12" src="{{ url_for('static', filename='logo.png') }}" alt="">Summarizy</h1>
+        </div>
+        <h1>Summarizer Bot</h1>
+        <div class=" rounded-full w-6 text-center cursor-pointer">
+        </div>
+    </nav>
+    <section class="flex h-screen pt-16">
+        <div class="w-16 shadow-md transition-all duration-100 ease-out hover:w-48 overflow-hidden">
+            <div onclick="clicked('1')"  id="summary" class="h-16 cursor-pointer flex items-center pl-6 gap-6">
+                <i class="text-2xl fa-solid fa-clipboard-list text-indigo-500"></i>
+                Summary
+            </div>
+            <div onclick="clicked('2')" id="history" class="h-16 cursor-pointer flex items-center pl-6 gap-6">
+                <i class="text-2xl fa-solid fa-clock-rotate-left text-red-400"></i>
+                History
+            </div>
+        </div>
+        <div id="content" class="w-full bg-gray-200 flex items-center justify-center p-6 ">
+            
+        </div>
+    </section>
+
+    <script>
+        var item = localStorage.getItem('menu');
+        var selected = '1';
+        if (item != null) {
+            selected = item;
+        }
+        
+        const summary = document.getElementById("summary");
+        const history = document.getElementById("history");
+        if (selected === '1') {
+            summary.classList.add('bg-gray-200');
+            loadContent("{{url_for('sum')}}");
+        } else {
+            history.classList.add('bg-gray-200');
+            loadContent("{{url_for('history')}}");
+        }
+
+        function clicked(val) {
+            if (val === '1') {
+                summary.classList.add('bg-gray-200');
+                history.classList.remove('bg-gray-200');
+                localStorage.setItem('menu', '1');
+                loadContent("{{url_for('sum')}}");
+                location.reload();
+            } else if (val === '2') {
+                history.classList.add('bg-gray-200');
+                summary.classList.remove('bg-gray-200');
+                localStorage.setItem('menu', '2');
+                loadContent("{{url_for('history')}}");
+                location.reload();
+            }
+        }
+
+        function loadContent(url) {
+            $.get(url, function (data) {
+                $('#content').html(data);
+                
+            });
+        }
+    </script>
+</body>
+</html>
